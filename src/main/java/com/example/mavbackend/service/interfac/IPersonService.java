@@ -15,4 +15,6 @@ public interface IPersonService {
     Page<Person> getAll(Pageable pageable);
 
     Person save(Person person);
+
+    Person edit(Person person);
 }

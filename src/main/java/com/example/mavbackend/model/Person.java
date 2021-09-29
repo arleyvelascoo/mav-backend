@@ -20,7 +20,7 @@ public class Person implements Serializable {
     private static final long serialVersionUID = -1916428034763263944L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "FIRST_NAME")
@@ -52,9 +52,6 @@ public class Person implements Serializable {
 
     @Column(name = "WAS_BAPTIZED")
     private Boolean wasBaptized;
-
-    @Column(name = "IS_PASTOR")
-    private Boolean isPastor;
 
     @Column(name = "ID_DOCUMENT_TYPE")
     private Long idDocumentType;

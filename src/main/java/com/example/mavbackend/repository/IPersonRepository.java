@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IPersonRepository extends JpaRepository<Person, Long> {
+    Person findTopByDocumentNumberAndIdDocumentType(String documentNumber, Long idDocumentType);
 }

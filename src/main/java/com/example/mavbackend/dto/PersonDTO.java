@@ -32,7 +32,6 @@ public class PersonDTO implements Serializable {
         CLAVES_TO_SORT.put("hasEncounter", "hasEncounter");
         CLAVES_TO_SORT.put("isLeader", "isLeader");
         CLAVES_TO_SORT.put("wasBaptized", "wasBaptized");
-        CLAVES_TO_SORT.put("isPastor", "isPastor");
         CLAVES_TO_SORT.put("idDocumentType", "idDocumentType");
         CLAVES_TO_SORT.put("idMinistry", "idMinistry");
         CLAVES_TO_SORT.put("idCity", "idCity");
@@ -70,8 +69,6 @@ public class PersonDTO implements Serializable {
     private Boolean isLeader;
 
     private Boolean wasBaptized;
-
-    private Boolean isPastor;
 
     private Long idDocumentType;
 
