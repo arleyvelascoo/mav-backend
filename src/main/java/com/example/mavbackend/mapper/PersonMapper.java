@@ -36,6 +36,7 @@ public interface PersonMapper {
      * Map PersonDTO to Person
      * @param personDTO - Instance of PersonDTO
      */
+    @Mapping(target = "lastNameAndFirstName", ignore = true)
     @Mapping(target = "ministry", ignore = true)
     @Mapping(target = "gender", ignore = true)
     @Mapping(target = "documentType", ignore = true)

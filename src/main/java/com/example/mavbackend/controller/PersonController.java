@@ -7,12 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Controller of Person
@@ -34,6 +31,26 @@ public class PersonController {
         if (personList == null || personList.isEmpty())
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(personList.map(p -> this.personMapper.toPersonDTO(p)), HttpStatus.OK);
+    }
+
+    /**
+     * Save a person
+     * @param personDTO -
+     */
+    @PostMapping
+    public ResponseEntity<PersonDTO> save(@RequestBody PersonDTO personDTO){
+        var saved = this.personService.save(personMapper.toPerson(personDTO));
+        if (saved == null)
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        return new ResponseEntity<>(personMapper.toPersonDTO(saved), HttpStatus.OK);
+    }
+
+    @PutMapping
+    public ResponseEntity<PersonDTO> edit(@RequestBody PersonDTO personDTO){
+        final var updated = this.personService.edit(personMapper.toPerson(personDTO));
+        if (updated == null)
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        return new ResponseEntity<>(personMapper.toPersonDTO(updated), HttpStatus.OK);
     }
 
     @Autowired
