@@ -1,5 +1,6 @@
 package com.example.mavbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -30,15 +31,28 @@ public class Ministry implements Serializable {
     @Column(name = "ID_HIGHER_MINISTRY")
     private Long idHigherMinistry;
 
+    @Column(name="ID_MINISTRY_TYPE")
+    private Long idMinistryType;
+
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FIRST_LEADER", insertable = false, updatable = false)
     private Person firstLeader;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_SECOND_LEADER", insertable = false, updatable = false)
     private Person secondLeader;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_HIGHER_MINISTRY", insertable = false, updatable = false)
     private Ministry higherMinistry;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID_MINISTRY_TYPE", insertable = false, updatable = false)
+    private MinistryType ministryType;
+
+
 }
