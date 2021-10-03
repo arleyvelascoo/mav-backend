@@ -1,6 +1,7 @@
 package com.example.mavbackend.controller;
 
 import com.example.mavbackend.dto.CityDTO;
+import com.example.mavbackend.dto.UserDTO;
 import com.example.mavbackend.mapper.CityMapper;
 import com.example.mavbackend.service.interfac.ICityService;
 import com.example.mavbackend.util.ITools;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,7 +29,7 @@ public class CityController {
      * @param pageable - Instance of Pageable
      */
     @GetMapping("/all")
-    public ResponseEntity<Page<CityDTO>> getAll(Pageable pageable) {
+    public ResponseEntity<Page<CityDTO>> getAll(@AuthenticationPrincipal UserDTO userDTO, Pageable pageable) {
         final var cityList = this.cityService.
                 getAll(ITools.getPageRequest(pageable, CityDTO.getClavesToSort()));
         if (cityList == null || cityList.isEmpty())
