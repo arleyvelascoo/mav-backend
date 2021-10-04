@@ -9,6 +9,7 @@ import java.io.Serializable;
 @Entity
 @Data
 @NoArgsConstructor
+@Table(name = "ROL")
 public class Rol implements Serializable {
 
     private static final long serialVersionUID = -4935760584580252950L;
@@ -17,8 +18,8 @@ public class Rol implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nombre;
+    private String name;
 
-    private String descripcion;
+    private String description;
 
 }

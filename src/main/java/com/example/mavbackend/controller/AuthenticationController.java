@@ -25,7 +25,7 @@ public class AuthenticationController {
 
     @PostMapping("/signIn")
     public ResponseEntity<UserDTO> signIn(@AuthenticationPrincipal UserDTO user) {
-        user.setToken(userAuthenticationProvider.createToken(user.getUsername()));
+        user.setToken(userAuthenticationProvider.createToken(user));
         return ResponseEntity.ok(user);
     }
 

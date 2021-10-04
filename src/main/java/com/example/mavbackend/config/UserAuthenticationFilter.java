@@ -2,7 +2,6 @@ package com.example.mavbackend.config;
 
 import com.example.mavbackend.dto.CredentialsDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;

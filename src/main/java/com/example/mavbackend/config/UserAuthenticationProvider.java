@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 
 @Component
 public class UserAuthenticationProvider {
@@ -26,12 +27,17 @@ public class UserAuthenticationProvider {
         this.authenticationService = authenticationService;
     }
 
-    public String createToken(String username){
-        var claims = Jwts.claims().setSubject(username);
+    public String createToken(UserDTO user){
+        var claimMap = new HashMap<String, Object>();
+        claimMap.put("username", user.getUsername());
+        claimMap.put("rolName", user.getRolName());
+        claimMap.put("idRol", user.getIdRol());
+        claimMap.put("idUser", user.getIdUser());
+        var claims2 = Jwts.claims(claimMap).setSubject(user.getUsername());
         var now = new Date();
         var validity = new Date(now.getTime() + 3600000); // 1 hour
         return Jwts.builder()
-                .setClaims(claims)
+                .setClaims(claims2)
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
@@ -39,14 +45,13 @@ public class UserAuthenticationProvider {
     }
 
     public Authentication validateToken(String token){
-        var username = Jwts.parser()
+        var claims = Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
-
-        UserDTO user = authenticationService.findByLogin(username);
-
+                .getBody();
+        var idRol = Long.valueOf((Integer)claims.get("idRol"));
+        var idUsuario = Long.valueOf((Integer) claims.get("idUser"));
+        UserDTO user = authenticationService.findByLogin(idUsuario, idRol);
         return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
     }
 
