@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Entity
 @Data
 @NoArgsConstructor
-@Table
+@Table(name = "USER")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 4074524076040284672L;
@@ -23,6 +23,6 @@ public class User implements Serializable {
     private String username;
 
     @Column(nullable = false)
-    private Character[] password;
+    private String password;
 
 }

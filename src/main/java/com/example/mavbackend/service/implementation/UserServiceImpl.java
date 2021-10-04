@@ -29,9 +29,7 @@ public class UserServiceImpl implements IUserService {
         }
 
         User user = userMapper.signUpToUser(userDto);
-        user.setPassword(
-                passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword()))
-                        .chars().mapToObj(char.class::cast).toArray(Character[]::new));
+        user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword())));
 
         User savedUser = userRepository.save(user);
 

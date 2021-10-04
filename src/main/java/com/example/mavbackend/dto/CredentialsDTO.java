@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CredentialsDTO {
     private String username;
-    private Character[] password;
+    private Long idRol;
+    private char[] password;
 }
