@@ -25,12 +25,12 @@ public class UserRol implements Serializable {
     private Long idUser;
 
     @JsonIgnore
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_ROL",insertable = false,updatable = false)
     private Rol rol;
 
     @JsonIgnore
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_USER",insertable = false,updatable = false)
     private User user;
 }
