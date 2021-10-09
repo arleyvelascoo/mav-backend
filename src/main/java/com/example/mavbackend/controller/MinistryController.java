@@ -1,6 +1,7 @@
 package com.example.mavbackend.controller;
 
 import com.example.mavbackend.dto.MinistryDTO;
+import com.example.mavbackend.dto.UserDTO;
 import com.example.mavbackend.mapper.MinistryMapper;
 import com.example.mavbackend.service.interfac.IMinistryService;
 import com.example.mavbackend.util.ITools;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -51,6 +53,17 @@ public class MinistryController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         return new ResponseEntity<>(ministryMapper.toMinistryDTO(ministrySaved), HttpStatus.OK);
     }
+
+
+    @PostMapping("/newleader")
+    public ResponseEntity<MinistryDTO> createLeader(@AuthenticationPrincipal UserDTO user,
+            @RequestBody MinistryDTO ministryDTO
+    ){
+        var created = this.ministryService.registerPerson(user,ministryMapper.toMinistry(ministryDTO));
+        if(created == null) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.ok(ministryMapper.toMinistryDTO(created));
+    }
+
 
     @Autowired
     public void setMinistryMapper(MinistryMapper ministryMapper) {

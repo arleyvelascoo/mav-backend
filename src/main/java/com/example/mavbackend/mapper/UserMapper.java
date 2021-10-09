@@ -1,5 +1,6 @@
 package com.example.mavbackend.mapper;
 
+import com.example.mavbackend.dto.SignUpDTO;
 import com.example.mavbackend.dto.UserDTO;
 import com.example.mavbackend.model.User;
 import com.example.mavbackend.model.UserRol;

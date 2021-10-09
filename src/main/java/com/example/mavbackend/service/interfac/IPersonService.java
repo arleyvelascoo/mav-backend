@@ -17,4 +17,8 @@ public interface IPersonService {
     Person save(Person person);
 
     Person edit(Person person);
+
+    void deleteById(Long personID);
+
+    Person findById(Long personId);
 }

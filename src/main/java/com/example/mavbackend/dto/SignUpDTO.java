@@ -1,4 +1,4 @@
-package com.example.mavbackend.mapper;
+package com.example.mavbackend.dto;
 
 import lombok.Getter;
 import lombok.Setter;

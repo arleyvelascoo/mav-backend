@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -20,6 +21,19 @@ import org.springframework.web.bind.annotation.*;
 public class PersonController {
     private IPersonService personService;
     private PersonMapper personMapper;
+
+    /**
+     * Get individual person by id
+     *
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<PersonDTO> findPersonById(
+            @PathVariable(name = "id") Long personId
+    ){
+        var response = this.personService.findById(personId);
+        if(response == null) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.ok(personMapper.toPersonDTO(response));
+    }
 
     /**
      * Gets all registers of Person with pagination and sorting
@@ -52,6 +66,13 @@ public class PersonController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         return new ResponseEntity<>(personMapper.toPersonDTO(updated), HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> delete(@PathVariable(name="id") Long personID){
+     this.personService.deleteById(personID);
+     return ResponseEntity.ok(true);
+    }
+
 
     @Autowired
     public void setPersonMapper(PersonMapper personMapper) {

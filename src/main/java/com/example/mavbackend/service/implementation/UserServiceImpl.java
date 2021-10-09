@@ -2,7 +2,7 @@ package com.example.mavbackend.service.implementation;
 
 import com.example.mavbackend.dto.UserDTO;
 import com.example.mavbackend.exception.MAVValidationException;
-import com.example.mavbackend.mapper.SignUpDTO;
+import com.example.mavbackend.dto.SignUpDTO;
 import com.example.mavbackend.mapper.UserMapper;
 import com.example.mavbackend.model.User;
 import com.example.mavbackend.repository.IUserRepository;
@@ -28,10 +28,10 @@ public class UserServiceImpl implements IUserService {
             throw new MAVValidationException("Login already exists");
         }
 
-        User user = userMapper.signUpToUser(userDto);
+        var user = userMapper.signUpToUser(userDto);
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword())));
 
-        User savedUser = userRepository.save(user);
+        var savedUser = userRepository.save(user);
 
         return userMapper.toUserDTO(savedUser);
     }

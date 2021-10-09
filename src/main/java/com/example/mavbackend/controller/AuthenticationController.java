@@ -1,19 +1,21 @@
 package com.example.mavbackend.controller;
 
 import com.example.mavbackend.config.UserAuthenticationProvider;
+import com.example.mavbackend.dto.RolDTO;
 import com.example.mavbackend.dto.UserDTO;
-import com.example.mavbackend.mapper.SignUpDTO;
+import com.example.mavbackend.dto.SignUpDTO;
+import com.example.mavbackend.mapper.RolMapper;
+import com.example.mavbackend.service.interfac.IRolService;
 import com.example.mavbackend.service.interfac.IUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,7 +23,9 @@ import javax.validation.Valid;
 public class AuthenticationController {
 
     private final IUserService userService;
+    private final IRolService rolService;
     private final UserAuthenticationProvider userAuthenticationProvider;
+    private final RolMapper rolMapper;
 
     @PostMapping("/signIn")
     public ResponseEntity<UserDTO> signIn(@AuthenticationPrincipal UserDTO user) {
@@ -33,6 +37,13 @@ public class AuthenticationController {
     public ResponseEntity<UserDTO> signUp(@RequestBody @Valid SignUpDTO user) {
         UserDTO createdUser = userService.signUp(user);
         return ResponseEntity.ok(createdUser);
+    }
+
+    @GetMapping("/roles")
+    public ResponseEntity<List<RolDTO>> selectRols(){
+        var rols = this.rolService.getAll();
+        if( rols ==null ||  rols.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.ok(rolMapper.toRolDTOList(rols));
     }
 
     @PostMapping("/signOut")

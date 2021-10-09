@@ -2,7 +2,7 @@ package com.example.mavbackend.service.implementation;
 
 import com.example.mavbackend.exception.MAVValidationException;
 import com.example.mavbackend.model.Person;
-import com.example.mavbackend.repository.IPersonRepository;
+import com.example.mavbackend.repository.*;
 import com.example.mavbackend.service.interfac.IPersonService;
 import com.example.mavbackend.util.IConstants;
 import lombok.AllArgsConstructor;
@@ -21,6 +21,10 @@ public class PersonServiceImpl implements IPersonService {
 
     private final IPersonRepository personRepository;
     private final EntityManager em;
+    private final IDocumentTypeRepository documentTypeRepository;
+    private final IGenderRepository genderRepository;
+    private final IMinistryRepository ministryRepository;
+    private final ICityRepository cityRepository;
 
     /**
      * Gets entire list of all persons with pagination
@@ -44,11 +48,31 @@ public class PersonServiceImpl implements IPersonService {
         return person;
     }
 
+    /**
+     * Update a new Person
+     * @param person - Instance of Person entity
+     */
     @Override
     @Transactional
     public Person edit(Person person){
         validate(person, IConstants.EDIT_MODE);
-        return this.personRepository.save(person);
+        this.personRepository.save(person);
+        this.setToResponse(person);
+        return person;
+    }
+
+    /**
+     * delete a new Person
+     * @param personID - Instance of Person entity
+     */
+    @Override
+    public void deleteById(Long personID) {
+        this.personRepository.deleteById(personID);
+    }
+
+    @Override
+    public Person findById(Long personId) {
+        return this.personRepository.findById(personId).orElseThrow(MAVValidationException::new);
     }
 
     private void validate(Person person, String mode){
@@ -63,4 +87,22 @@ public class PersonServiceImpl implements IPersonService {
             }
         }
     }
+
+    //private methods
+
+    private void setToResponse(Person person) {
+        if(person.getIdCity() != null){
+            person.setCity(this.cityRepository.findById(person.getIdCity()).orElseThrow(MAVValidationException::new));
+        }
+        if(person.getIdDocumentType() != null){
+            person.setDocumentType(this.documentTypeRepository.findById(person.getIdDocumentType()).orElseThrow(MAVValidationException::new));
+        }
+        if(person.getIdGender() != null){
+            person.setGender(this.genderRepository.findById(person.getIdGender()).orElseThrow(MAVValidationException::new));
+        }
+        if(person.getIdMinistry() != null){
+            person.setCity(this.cityRepository.findById(person.getIdCity()).orElseThrow(MAVValidationException::new));
+        }
+    }
+
 }

@@ -34,6 +34,9 @@ public class Ministry implements Serializable {
     @Column(name="ID_MINISTRY_TYPE")
     private Long idMinistryType;
 
+    @Column(name = "ID_USER")
+    private Long idUser;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FIRST_LEADER", insertable = false, updatable = false)
