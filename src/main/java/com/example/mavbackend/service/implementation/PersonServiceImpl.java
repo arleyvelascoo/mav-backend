@@ -1,5 +1,6 @@
 package com.example.mavbackend.service.implementation;
 
+import com.example.mavbackend.dto.UserDTO;
 import com.example.mavbackend.exception.MAVValidationException;
 import com.example.mavbackend.model.Person;
 import com.example.mavbackend.repository.*;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.util.Objects;
 
 @Qualifier("principalPersonService")
 @AllArgsConstructor
@@ -25,7 +27,8 @@ public class PersonServiceImpl implements IPersonService {
     private final IGenderRepository genderRepository;
     private final IMinistryRepository ministryRepository;
     private final ICityRepository cityRepository;
-
+    private final IRolRepository rolRepository;
+    private final IUserRepository userRepository;
     /**
      * Gets entire list of all persons with pagination
      * @param pageable - Instance of Pageable
@@ -41,11 +44,29 @@ public class PersonServiceImpl implements IPersonService {
      */
     @Override
     @Transactional
-    public Person save(Person person) {
+    public Person save(Person person, UserDTO userDTO) {
+
+        var isUser = this.rolRepository.findById(userDTO.getIdRol()).orElseThrow(MAVValidationException::new);
+        if(Objects.equals(isUser.getName(), IConstants.USERROL)){
+            this.validateUser(person,userDTO.getIdUser());
+        }else if(Objects.equals(isUser.getName(), IConstants.LEADERROL)){
+            this.validateLeader(person,userDTO.getIdUser());
+        }
         validate(person, IConstants.INSERT_MODE);
         this.personRepository.save(person);
         em.refresh(person);
         return person;
+    }
+
+    private void validateLeader(Person person, Long idUser) {
+        var pes = this.personRepository.findById(person.getId()).orElseThrow(RuntimeException::new);
+        //lo que tengo que hacer es ir a la tabla ministerio y buscar el ministerio por idusuario luego
+        //validamos que la persona esta asociada a dicho ministerio y si no exception y ya.
+    }
+
+    private void validateUser(Person person, Long idUser) {
+        var pes = this.personRepository.findById(person.getId()).orElseThrow(RuntimeException::new);
+        if(!pes.getUserId().equals(idUser)) throw new MAVValidationException("Como va a modificar los datos de otro no sea hp.");
     }
 
     /**

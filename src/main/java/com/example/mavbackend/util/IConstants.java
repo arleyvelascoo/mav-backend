@@ -12,4 +12,10 @@ public final class IConstants {
     public static final String ZONA_HORARIA_COLOMBIA = "America/Bogota";
     public static final String EDIT_MODE = "EDIT";
     public static final String INSERT_MODE = "INSERT";
+
+    public static String USERROL = "MIEMBRO";
+    public static String LEADERROL = "LIDER";
+    public static String ADMINISTRATOR = "ADMINISTRADOR";
+
+
 }

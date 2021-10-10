@@ -8,4 +8,6 @@ import java.util.List;
 @Service
 public interface IRolService {
     List<Rol> getAll();
+
+    Rol findById(Long idRol);
 }

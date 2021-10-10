@@ -1,6 +1,7 @@
 package com.example.mavbackend.controller;
 
 import com.example.mavbackend.dto.PersonDTO;
+import com.example.mavbackend.dto.UserDTO;
 import com.example.mavbackend.mapper.PersonMapper;
 import com.example.mavbackend.service.interfac.IPersonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,8 +54,8 @@ public class PersonController {
      * @param personDTO -
      */
     @PostMapping
-    public ResponseEntity<PersonDTO> save(@RequestBody PersonDTO personDTO){
-        var saved = this.personService.save(personMapper.toPerson(personDTO));
+    public ResponseEntity<PersonDTO> save(@AuthenticationPrincipal UserDTO userDTO, @RequestBody PersonDTO personDTO){
+        var saved = this.personService.save(personMapper.toPerson(personDTO),userDTO);
         if (saved == null)
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         return new ResponseEntity<>(personMapper.toPersonDTO(saved), HttpStatus.OK);

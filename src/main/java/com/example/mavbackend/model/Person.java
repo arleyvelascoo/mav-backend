@@ -23,6 +23,9 @@ public class Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "USER_ID")
+    private Long userId;
+
     @Column(name = "FIRST_NAME")
     private String firstName;
 
@@ -76,6 +79,10 @@ public class Person implements Serializable {
     @JoinColumn(name = "ID_CITY", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private City city;
+
+    @JoinColumn(name = "USER_ID", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
     @JoinColumn(name = "ID_GENDER", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)

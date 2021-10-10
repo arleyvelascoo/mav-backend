@@ -1,6 +1,9 @@
 package com.example.mavbackend.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.Ordered;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -30,6 +33,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/auth/roles").permitAll()
                 .anyRequest().authenticated();
     }
+
+   /* //por si acaso.
+    @Bean
+    public FilterRegistrationBean<UserAuthorizationFilter> userAuthorizationFilter(){
+        var filterRegistrationBean = new FilterRegistrationBean<UserAuthorizationFilter>();
+        filterRegistrationBean.setFilter(new UserAuthorizationFilter());
+        filterRegistrationBean.addUrlPatterns("/api/person/*");
+        filterRegistrationBean.setOrder(Ordered.LOWEST_PRECEDENCE -1);
+        return filterRegistrationBean;
+    }*/
+
 
     @Autowired
     public void setUserAuthenticationEntryPoint(UserAuthenticationEntryPoint userAuthenticationEntryPoint) {
