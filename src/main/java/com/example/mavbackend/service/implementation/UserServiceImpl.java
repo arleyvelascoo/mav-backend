@@ -5,11 +5,14 @@ import com.example.mavbackend.exception.MAVValidationException;
 import com.example.mavbackend.dto.SignUpDTO;
 import com.example.mavbackend.mapper.UserMapper;
 import com.example.mavbackend.model.User;
+import com.example.mavbackend.repository.IMinistryRepository;
+import com.example.mavbackend.repository.IPersonRepository;
 import com.example.mavbackend.repository.IUserRepository;
 import com.example.mavbackend.service.interfac.IUserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.CharBuffer;
 
@@ -19,6 +22,14 @@ public class UserServiceImpl implements IUserService {
     private final IUserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final IPersonRepository personRepository;
+    private final IMinistryRepository ministryRepository;
+
+    @Override
+    public Boolean existsUsername(String username){
+        return this.userRepository.findTopByUsername(username) != null;
+    }
+
 
     @Override
     public UserDTO signUp(SignUpDTO userDto) {
@@ -28,6 +39,9 @@ public class UserServiceImpl implements IUserService {
             throw new MAVValidationException("Login already exists");
         }
 
+        if(this.personRepository.findByEmail(userDto.getEmail())==null)
+            throw new MAVValidationException("Usuario no registrado como persona");
+
         var user = userMapper.signUpToUser(userDto);
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword())));
 
@@ -35,4 +49,26 @@ public class UserServiceImpl implements IUserService {
 
         return userMapper.toUserDTO(savedUser);
     }
+
+    @Override
+    public Boolean validateUserSignUp(String email, String document) {
+        return this.personRepository.findByDocumentNumberAndEmail(document,email)!=null;
+    }
+
+    @Override
+    public UserDTO createMinistryUser(SignUpDTO user) {
+        var person = this.personRepository.findByEmail(user.getEmail());
+        if(person == null) throw new MAVValidationException("Email no registrado en la base de datos.");
+
+        var ministry  = this.ministryRepository.findByIdPersonToCreate(person.getId());
+        if(ministry == null) throw new MAVValidationException("No se encuentra asignado a un ministerio pendiente, por favor" +
+                "comuniquese con su líder para verificar el proceso de registro");
+        var userCreated = this.signUp(user);
+
+        if(userCreated == null) throw new MAVValidationException("No se pudo crear el usuario.");
+        ministry.setIdUser(userCreated.getIdUser());
+        this.ministryRepository.save(ministry);
+        return userCreated;
+    }
+
 }

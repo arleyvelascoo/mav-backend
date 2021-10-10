@@ -71,5 +71,11 @@ public class MinistryServiceImpl implements IMinistryService {
         return ministry;
     }
 
+    @Override
+    public Boolean validateMinistrySignUp(String email, String document) {
+        var person =  this.personRepository.findByDocumentNumberAndEmail(document,email);
+        return this.ministryRepository.findByIdPersonToCreate(person.getId())!= null;
+    }
+
 
 }

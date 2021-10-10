@@ -1,5 +1,6 @@
 package com.example.mavbackend.service.interfac;
 
+import com.example.mavbackend.dto.SignUpDTO;
 import com.example.mavbackend.dto.UserDTO;
 import com.example.mavbackend.model.Ministry;
 import com.example.mavbackend.model.User;
@@ -19,4 +20,7 @@ public interface IMinistryService {
     Ministry save(Ministry ministry);
 
     Ministry registerPerson(UserDTO user , Ministry ministry);
+
+    Boolean validateMinistrySignUp(String email, String document);
+
 }

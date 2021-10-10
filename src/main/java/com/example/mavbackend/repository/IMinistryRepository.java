@@ -16,4 +16,7 @@ public interface IMinistryRepository extends JpaRepository<Ministry, Long> {
 
     @Query("from Ministry m where (m.idFirstLeader = :personId or m.secondLeader = :personId) ")
     Ministry findByIdPerson(Long personId);
+
+    @Query("from Ministry m where (m.idFirstLeader = :personId or m.secondLeader = :personId) and m.idUser is null")
+    Ministry findByIdPersonToCreate(Long personId);
 }

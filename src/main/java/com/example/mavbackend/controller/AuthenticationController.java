@@ -5,6 +5,7 @@ import com.example.mavbackend.dto.RolDTO;
 import com.example.mavbackend.dto.UserDTO;
 import com.example.mavbackend.dto.SignUpDTO;
 import com.example.mavbackend.mapper.RolMapper;
+import com.example.mavbackend.service.interfac.IMinistryService;
 import com.example.mavbackend.service.interfac.IRolService;
 import com.example.mavbackend.service.interfac.IUserService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class AuthenticationController {
     private final IUserService userService;
     private final IRolService rolService;
     private final UserAuthenticationProvider userAuthenticationProvider;
+    private final IMinistryService ministryService;
     private final RolMapper rolMapper;
 
     @PostMapping("/signIn")
@@ -34,10 +36,39 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signUp")
-    public ResponseEntity<UserDTO> signUp(@RequestBody @Valid SignUpDTO user) {
-        UserDTO createdUser = userService.signUp(user);
-        return ResponseEntity.ok(createdUser);
+    public ResponseEntity<UserDTO> signUp(@RequestBody @Valid SignUpDTO user,
+                                          @RequestParam(name = "type") Integer type) {
+        if(type != null && type == 1){
+            UserDTO createdUser = userService.signUp(user);
+            return ResponseEntity.ok(createdUser);
+        }
+        else if(type!=null && type == 2) return ResponseEntity.ok(userService.createMinistryUser(user));
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
+    @GetMapping("/validarCreacionMinisterio")
+    public ResponseEntity<Boolean> validateMinistryCreation(
+            @RequestParam(name = "email") String email,
+            @RequestParam(name = "documento") String document
+    ){
+        return ResponseEntity.ok(this.ministryService.validateMinistrySignUp(email,document));
+    }
+
+    @GetMapping("/validarCreacionUsuario")
+    public ResponseEntity<Boolean> validateUserCreation(
+            @RequestParam(name = "email") String email,
+            @RequestParam(name = "documento") String document
+    ){
+        return ResponseEntity.ok(this.userService.validateUserSignUp(email,document));
+    }
+
+    @GetMapping("/existsUsername")
+    public ResponseEntity<Boolean> validateUserCreation(
+            @RequestParam(name = "username") String username
+    ){
+        return ResponseEntity.ok(this.userService.existsUsername(username));
+    }
+
 
     @GetMapping("/roles")
     public ResponseEntity<List<RolDTO>> selectRols(){
