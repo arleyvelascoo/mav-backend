@@ -49,6 +49,13 @@ public class PersonController {
         return new ResponseEntity<>(personList.map(p -> this.personMapper.toPersonDTO(p)), HttpStatus.OK);
     }
 
+
+    @GetMapping("/")
+    public ResponseEntity<PersonDTO> findPersonFromUser(@AuthenticationPrincipal UserDTO userDTO){
+        var person = this.personService.findByIdUser(userDTO.getIdUser());
+        if(person == null) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.ok(this.personMapper.toPersonDTO(person));
+    }
     /**
      * Save a person
      * @param personDTO -

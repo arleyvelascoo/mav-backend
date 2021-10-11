@@ -15,6 +15,8 @@ public interface IPersonService {
 
     Page<Person> getAll(Pageable pageable);
 
+    Person findByIdUser(Long userId);
+
     Person save(Person person);
 
     Person edit(Person person, UserDTO userDTO);

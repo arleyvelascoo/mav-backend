@@ -38,6 +38,14 @@ public class PersonServiceImpl implements IPersonService {
         return this.personRepository.findAll(pageable);
     }
 
+
+    @Override
+    public Person findByIdUser(Long userId){
+        var user = this.userRepository.findById(userId).orElseThrow(MAVValidationException::new);
+        return this.personRepository.findByIdUser(user.getId());
+    }
+
+
     /**
      * Save a new Person
      * @param person - Instance of Person entity
@@ -59,13 +67,12 @@ public class PersonServiceImpl implements IPersonService {
     @Override
     @Transactional
     public Person edit(Person person, UserDTO userDTO){
-        var isUser = this.rolRepository.findById(userDTO.getIdRol()).orElseThrow(MAVValidationException::new);
-        if(Objects.equals(isUser.getName(), IConstants.USERROL)){
+        var rol = this.rolRepository.findById(userDTO.getIdRol()).orElseThrow(MAVValidationException::new);
+        if(Objects.equals(rol.getName(), IConstants.USERROL)){
             this.validateUser(person.getId(),userDTO.getIdUser());
-        }else if(Objects.equals(isUser.getName(), IConstants.LEADERROL)){
+        }else if(Objects.equals(rol.getName(), IConstants.LEADERROL)){
             this.validateLeader(person.getId(),userDTO.getIdUser());
         }
-
         validate(person, IConstants.EDIT_MODE);
         this.personRepository.save(person);
         this.setToResponse(person);
