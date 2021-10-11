@@ -54,24 +54,24 @@ public class PersonController {
      * @param personDTO -
      */
     @PostMapping
-    public ResponseEntity<PersonDTO> save(@AuthenticationPrincipal UserDTO userDTO, @RequestBody PersonDTO personDTO){
-        var saved = this.personService.save(personMapper.toPerson(personDTO),userDTO);
+    public ResponseEntity<PersonDTO> save(@RequestBody PersonDTO personDTO){
+        var saved = this.personService.save(personMapper.toPerson(personDTO));
         if (saved == null)
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         return new ResponseEntity<>(personMapper.toPersonDTO(saved), HttpStatus.OK);
     }
 
     @PutMapping
-    public ResponseEntity<PersonDTO> edit(@RequestBody PersonDTO personDTO){
-        final var updated = this.personService.edit(personMapper.toPerson(personDTO));
+    public ResponseEntity<PersonDTO> edit(@AuthenticationPrincipal UserDTO userDTO,@RequestBody PersonDTO personDTO){
+        final var updated = this.personService.edit(personMapper.toPerson(personDTO),userDTO);
         if (updated == null)
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         return new ResponseEntity<>(personMapper.toPersonDTO(updated), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> delete(@PathVariable(name="id") Long personID){
-     this.personService.deleteById(personID);
+    public ResponseEntity<Boolean> delete(@AuthenticationPrincipal UserDTO userDTO,@PathVariable(name="id") Long personID){
+     this.personService.deleteById(personID,userDTO);
      return ResponseEntity.ok(true);
     }
 

@@ -44,30 +44,13 @@ public class PersonServiceImpl implements IPersonService {
      */
     @Override
     @Transactional
-    public Person save(Person person, UserDTO userDTO) {
-
-        var isUser = this.rolRepository.findById(userDTO.getIdRol()).orElseThrow(MAVValidationException::new);
-        if(Objects.equals(isUser.getName(), IConstants.USERROL)){
-            this.validateUser(person,userDTO.getIdUser());
-        }else if(Objects.equals(isUser.getName(), IConstants.LEADERROL)){
-            this.validateLeader(person,userDTO.getIdUser());
-        }
+    public Person save(Person person) {
         validate(person, IConstants.INSERT_MODE);
         this.personRepository.save(person);
         em.refresh(person);
         return person;
     }
 
-    private void validateLeader(Person person, Long idUser) {
-        var pes = this.personRepository.findById(person.getId()).orElseThrow(RuntimeException::new);
-        //lo que tengo que hacer es ir a la tabla ministerio y buscar el ministerio por idusuario luego
-        //validamos que la persona esta asociada a dicho ministerio y si no exception y ya.
-    }
-
-    private void validateUser(Person person, Long idUser) {
-        var pes = this.personRepository.findById(person.getId()).orElseThrow(RuntimeException::new);
-        if(!pes.getUserId().equals(idUser)) throw new MAVValidationException("Como va a modificar los datos de otro no sea hp.");
-    }
 
     /**
      * Update a new Person
@@ -75,7 +58,14 @@ public class PersonServiceImpl implements IPersonService {
      */
     @Override
     @Transactional
-    public Person edit(Person person){
+    public Person edit(Person person, UserDTO userDTO){
+        var isUser = this.rolRepository.findById(userDTO.getIdRol()).orElseThrow(MAVValidationException::new);
+        if(Objects.equals(isUser.getName(), IConstants.USERROL)){
+            this.validateUser(person.getId(),userDTO.getIdUser());
+        }else if(Objects.equals(isUser.getName(), IConstants.LEADERROL)){
+            this.validateLeader(person.getId(),userDTO.getIdUser());
+        }
+
         validate(person, IConstants.EDIT_MODE);
         this.personRepository.save(person);
         this.setToResponse(person);
@@ -87,7 +77,14 @@ public class PersonServiceImpl implements IPersonService {
      * @param personID - Instance of Person entity
      */
     @Override
-    public void deleteById(Long personID) {
+    public void deleteById(Long personID, UserDTO userDTO) {
+
+        var isUser = this.rolRepository.findById(userDTO.getIdRol()).orElseThrow(MAVValidationException::new);
+        if(Objects.equals(isUser.getName(), IConstants.USERROL)){
+            throw new MAVValidationException("No tiene permisos para deletear a alguien, y si no le sirve vaya busquelo a la casa.");
+        }else if(Objects.equals(isUser.getName(), IConstants.LEADERROL)){
+            this.validateLeader(personID,userDTO.getIdUser());
+        }
         this.personRepository.deleteById(personID);
     }
 
@@ -124,6 +121,19 @@ public class PersonServiceImpl implements IPersonService {
         if(person.getIdMinistry() != null){
             person.setCity(this.cityRepository.findById(person.getIdCity()).orElseThrow(MAVValidationException::new));
         }
+    }
+
+    private void validateLeader(Long personId, Long idUser) {
+        var pes = this.personRepository.findById(personId).orElseThrow(RuntimeException::new);
+        var ministry = this.ministryRepository.findTopByIdUser(idUser);
+        if(ministry == null) throw new MAVValidationException("are you a hacker? who give you the leader rol?");
+
+        if(!pes.getIdMinistry().equals(ministry.getId())) throw new MAVValidationException("You are trying to edit a person that is not your disciple. it is not possible bro.");
+    }
+
+    private void validateUser(Long personId, Long idUser) {
+        var pes = this.personRepository.findById(personId).orElseThrow(RuntimeException::new);
+        if(!pes.getUserId().equals(idUser)) throw new MAVValidationException("Como va a modificar los datos de otro no sea perro.");
     }
 
 }

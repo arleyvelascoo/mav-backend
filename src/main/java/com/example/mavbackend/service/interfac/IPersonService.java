@@ -15,11 +15,11 @@ public interface IPersonService {
 
     Page<Person> getAll(Pageable pageable);
 
-    Person save(Person person, UserDTO user);
+    Person save(Person person);
 
-    Person edit(Person person);
+    Person edit(Person person, UserDTO userDTO);
 
-    void deleteById(Long personID);
+    void deleteById(Long personID,UserDTO userDTO);
 
     Person findById(Long personId);
 }
