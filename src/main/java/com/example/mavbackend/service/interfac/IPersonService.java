@@ -17,7 +17,7 @@ public interface IPersonService {
 
     Person findByIdUser(Long userId);
 
-    Person save(Person person);
+    Person save(Person person,UserDTO userDTO);
 
     Person edit(Person person, UserDTO userDTO);
 

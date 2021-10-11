@@ -6,6 +6,7 @@ import com.example.mavbackend.model.Person;
 import com.example.mavbackend.repository.*;
 import com.example.mavbackend.service.interfac.IPersonService;
 import com.example.mavbackend.util.IConstants;
+import com.example.mavbackend.util.ITools;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -29,6 +30,7 @@ public class PersonServiceImpl implements IPersonService {
     private final ICityRepository cityRepository;
     private final IRolRepository rolRepository;
     private final IUserRepository userRepository;
+    private final IUserRolRepository userRolRepository;
     /**
      * Gets entire list of all persons with pagination
      * @param pageable - Instance of Pageable
@@ -42,7 +44,7 @@ public class PersonServiceImpl implements IPersonService {
     @Override
     public Person findByIdUser(Long userId){
         var user = this.userRepository.findById(userId).orElseThrow(MAVValidationException::new);
-        return this.personRepository.findByIdUser(user.getId());
+        return this.personRepository.findTopByUserId(user.getId());
     }
 
 
@@ -52,8 +54,18 @@ public class PersonServiceImpl implements IPersonService {
      */
     @Override
     @Transactional
-    public Person save(Person person) {
+    public Person save(Person person,UserDTO userDTO) {
+
+        var rol = this.rolRepository.findById(userDTO.getIdRol()).orElseThrow(MAVValidationException::new);
+        if(!rol.getName().equals(IConstants.LEADERROL)){
+            throw new MAVValidationException("Solo el lider puede agregar personas.");
+        }
+
+        var user = this.userRepository.findById(userDTO.getIdUser()).orElseThrow(MAVValidationException::new);
+
+        var ministry = this.ministryRepository.findTopByIdUser(user.getId());
         validate(person, IConstants.INSERT_MODE);
+        person.setIdMinistry(ministry.getId());
         this.personRepository.save(person);
         em.refresh(person);
         return person;
@@ -73,6 +85,8 @@ public class PersonServiceImpl implements IPersonService {
         }else if(Objects.equals(rol.getName(), IConstants.LEADERROL)){
             this.validateLeader(person.getId(),userDTO.getIdUser());
         }
+        var personBD = this.personRepository.findById(person.getId()).orElseThrow(MAVValidationException::new);
+        person = (Person)ITools.copiarPropiedadesObjetoAHaciaBIgnorandoNulosDeA(person,personBD);
         validate(person, IConstants.EDIT_MODE);
         this.personRepository.save(person);
         this.setToResponse(person);

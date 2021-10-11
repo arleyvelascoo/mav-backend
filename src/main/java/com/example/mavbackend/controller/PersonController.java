@@ -61,8 +61,8 @@ public class PersonController {
      * @param personDTO -
      */
     @PostMapping
-    public ResponseEntity<PersonDTO> save(@RequestBody PersonDTO personDTO){
-        var saved = this.personService.save(personMapper.toPerson(personDTO));
+    public ResponseEntity<PersonDTO> save(@AuthenticationPrincipal UserDTO userDTO,@RequestBody PersonDTO personDTO){
+        var saved = this.personService.save(personMapper.toPerson(personDTO),userDTO);
         if (saved == null)
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         return new ResponseEntity<>(personMapper.toPersonDTO(saved), HttpStatus.OK);
