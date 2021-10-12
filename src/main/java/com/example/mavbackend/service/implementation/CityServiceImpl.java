@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Qualifier("principalCityService")
 @AllArgsConstructor
 @Service
@@ -35,7 +37,7 @@ public class CityServiceImpl implements ICityService {
     }
 
     @Override
-    public City findByInput(String city) {
+    public List<City> findByInput(String city) {
         return this.cityRepository.findByInput(city);
     }
 }

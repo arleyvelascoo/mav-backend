@@ -13,6 +13,6 @@ public class CitiesDTO implements Serializable {
 
     private Long id;
 
-    private String cityStateCounty;
+    private String cityStateCountry;
 
 }

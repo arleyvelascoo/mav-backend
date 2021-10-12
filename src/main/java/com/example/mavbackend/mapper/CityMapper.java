@@ -19,6 +19,7 @@ public interface CityMapper {
 
     CitiesDTO toCitiesDTO(City city);
 
+    List<CitiesDTO> toCitiesDTOList(List<City> cities);
     /**
      * Map City to CityDTO
      * @param city - Instance of City

@@ -16,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -38,13 +39,13 @@ public class CityController {
         return new ResponseEntity<>(cityList.map(c -> this.cityMapper.toCityDTO(c)), HttpStatus.OK);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<CitiesDTO> getByInput(
+    @GetMapping("")
+    public ResponseEntity<List<CitiesDTO>> getByInput(
             @RequestParam(name = "city") String city
     ){
         var response =  this.cityService.findByInput(city);
         if(response == null) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        return ResponseEntity.ok(this.cityMapper.toCitiesDTO(response));
+        return ResponseEntity.ok(this.cityMapper.toCitiesDTOList(response));
     }
     /**
      * Save a new City

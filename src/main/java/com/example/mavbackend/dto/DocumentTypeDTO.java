@@ -13,6 +13,6 @@ public class DocumentTypeDTO implements Serializable {
 
     private Long id;
 
-    private String DocumentName;
+    private String documentName;
 
 }
