@@ -33,9 +33,4 @@ public class City implements Serializable {
     @JoinColumn(name = "ID_STATE", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private State state;
-
-    @JsonIgnore
-    @Formula("SELECT CONCAT(C.NAME,' - ',C.STATE.NAME,' - ',C.STATE.COUNTRY.NAME) FROM cities c")
-    private String cityStateCountry;
-
 }

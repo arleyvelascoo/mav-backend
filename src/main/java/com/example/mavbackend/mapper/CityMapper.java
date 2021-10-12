@@ -17,6 +17,7 @@ public interface CityMapper {
     //Entity to DTO
 
 
+    @Mapping(target = "cityStateCountry",expression = "java(city.getName() + \" - \" + city.getState().getName() + \" - \" + city.getState().getCountry().getName())")
     CitiesDTO toCitiesDTO(City city);
 
     List<CitiesDTO> toCitiesDTOList(List<City> cities);
