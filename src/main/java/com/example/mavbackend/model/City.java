@@ -35,8 +35,7 @@ public class City implements Serializable {
     private State state;
 
     @JsonIgnore
-    @Formula("(SELECT UPPER(c.name) FROM cities c ) || ' - ' || (SELECT UPPER(c.state.name) FROM cities c ) " +
-            "|| ' - ' || (SELECT UPPER(c.state.country.name) FROM cities c )")
+    @Formula("SELECT CONCAT(C.NAME,' - ',C.STATE.NAME,' - ',C.STATE.COUNTRY.NAME) FROM cities c")
     private String cityStateCountry;
 
 }
