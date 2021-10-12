@@ -33,4 +33,9 @@ public class CityServiceImpl implements ICityService {
     public City save(City city) {
         return this.cityRepository.save(city);
     }
+
+    @Override
+    public City findByInput(String city) {
+        return this.cityRepository.findByInput(city);
+    }
 }

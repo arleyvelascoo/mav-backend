@@ -1,5 +1,6 @@
 package com.example.mavbackend.mapper;
 
+import com.example.mavbackend.dto.CitiesDTO;
 import com.example.mavbackend.dto.CityDTO;
 import com.example.mavbackend.model.City;
 import org.mapstruct.Mapper;
@@ -14,6 +15,9 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CityMapper {
     //Entity to DTO
+
+
+    CitiesDTO toCitiesDTO(City city);
 
     /**
      * Map City to CityDTO

@@ -1,5 +1,6 @@
 package com.example.mavbackend.controller;
 
+import com.example.mavbackend.dto.CitiesDTO;
 import com.example.mavbackend.dto.CityDTO;
 import com.example.mavbackend.dto.UserDTO;
 import com.example.mavbackend.mapper.CityMapper;
@@ -37,6 +38,14 @@ public class CityController {
         return new ResponseEntity<>(cityList.map(c -> this.cityMapper.toCityDTO(c)), HttpStatus.OK);
     }
 
+    @GetMapping("/")
+    public ResponseEntity<CitiesDTO> getByInput(
+            @RequestParam(name = "city") String city
+    ){
+        var response =  this.cityService.findByInput(city);
+        if(response == null) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.ok(this.cityMapper.toCitiesDTO(response));
+    }
     /**
      * Save a new City
      *

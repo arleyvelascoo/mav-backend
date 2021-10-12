@@ -1,7 +1,9 @@
 package com.example.mavbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -31,4 +33,10 @@ public class City implements Serializable {
     @JoinColumn(name = "ID_STATE", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private State state;
+
+    @JsonIgnore
+    @Formula("(SELECT UPPER(c.name) FROM cities c ) || ' - ' || (SELECT UPPER(c.state.name) FROM cities c ) " +
+            "|| ' - ' || (SELECT UPPER(c.state.country.name) FROM cities c )")
+    private String cityStateCounty;
+
 }

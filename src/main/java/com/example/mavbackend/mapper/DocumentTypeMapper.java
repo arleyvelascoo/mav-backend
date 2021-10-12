@@ -4,7 +4,6 @@ import com.example.mavbackend.dto.DocumentTypeDTO;
 import com.example.mavbackend.model.DocumentType;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 

@@ -15,4 +15,6 @@ public interface ICityService {
     Page<City> getAll(Pageable pageable);
 
     City save(City city);
+
+    City findByInput(String city);
 }
