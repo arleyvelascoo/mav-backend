@@ -6,10 +6,7 @@ import com.example.mavbackend.dto.SignUpDTO;
 import com.example.mavbackend.mapper.UserMapper;
 import com.example.mavbackend.model.User;
 import com.example.mavbackend.model.UserRol;
-import com.example.mavbackend.repository.IMinistryRepository;
-import com.example.mavbackend.repository.IPersonRepository;
-import com.example.mavbackend.repository.IRolRepository;
-import com.example.mavbackend.repository.IUserRepository;
+import com.example.mavbackend.repository.*;
 import com.example.mavbackend.service.interfac.IUserService;
 import com.example.mavbackend.util.IConstants;
 import lombok.AllArgsConstructor;
@@ -28,6 +25,7 @@ public class UserServiceImpl implements IUserService {
     private final IPersonRepository personRepository;
     private final IMinistryRepository ministryRepository;
     private final IRolRepository rolRepository;
+    private final IUserRolRepository userRolRepository;
 
     @Override
     public Boolean existsUsername(String username){
@@ -59,7 +57,7 @@ public class UserServiceImpl implements IUserService {
         newUserRol.setIdUser(savedUser.getId());
         newUserRol.setIdRol(this.rolRepository.findTopByNameIgnoreCase(IConstants.USERROL).orElseThrow(()-> new MAVValidationException("No se pudo realizar el registro.")).getId());
         toSignUp.setUserId(savedUser.getId());
-
+        this.userRolRepository.save(newUserRol);
         return userMapper.toUserDTO(savedUser);
     }
 
