@@ -8,8 +8,10 @@ import com.example.mavbackend.model.User;
 import com.example.mavbackend.model.UserRol;
 import com.example.mavbackend.repository.IMinistryRepository;
 import com.example.mavbackend.repository.IPersonRepository;
+import com.example.mavbackend.repository.IRolRepository;
 import com.example.mavbackend.repository.IUserRepository;
 import com.example.mavbackend.service.interfac.IUserService;
+import com.example.mavbackend.util.IConstants;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ public class UserServiceImpl implements IUserService {
     private final PasswordEncoder passwordEncoder;
     private final IPersonRepository personRepository;
     private final IMinistryRepository ministryRepository;
+    private final IRolRepository rolRepository;
 
     @Override
     public Boolean existsUsername(String username){
@@ -52,6 +55,11 @@ public class UserServiceImpl implements IUserService {
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword())));
 
         var savedUser = userRepository.save(user);
+        if(savedUser == null) throw new MAVValidationException("POR NEGRO NO PUEDE REGISTRARSE.");
+        var newUserRol = new UserRol();
+        newUserRol.setIdUser(savedUser.getId());
+        newUserRol.setIdRol(this.rolRepository.findTopByNameIgnoreCase(IConstants.USERROL).orElseThrow(()-> new MAVValidationException("ud no tiene miembro (rol jaja).")).getId());
+        toSignUp.setUserId(savedUser.getId());
 
         return userMapper.toUserDTO(savedUser);
     }
