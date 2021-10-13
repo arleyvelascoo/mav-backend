@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Repository of Ministry
  */
@@ -19,4 +21,7 @@ public interface IMinistryRepository extends JpaRepository<Ministry, Long> {
 
     @Query("from Ministry m where (m.idFirstLeader = :personId or m.secondLeader = :personId) and m.idUser is null")
     Ministry findByIdPersonToCreate(Long personId);
+
+    List<Ministry> findAllByIdHigherMinistry(Long idHigherMinistry);
+
 }

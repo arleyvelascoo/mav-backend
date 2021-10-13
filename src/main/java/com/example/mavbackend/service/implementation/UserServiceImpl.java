@@ -39,8 +39,13 @@ public class UserServiceImpl implements IUserService {
             throw new MAVValidationException("Login already exists");
         }
 
-        if(this.personRepository.findByEmail(userDto.getEmail())==null)
+        var toSignUp = this.personRepository.findByEmailAndDocumentNumber(userDto.getEmail(),userDto.getDocument());
+
+        if(toSignUp==null)
             throw new MAVValidationException("Usuario no registrado como persona");
+
+        if(toSignUp.getUserId() != null)
+            throw new MAVValidationException("Ya tiene Usuario registrado.");
 
         var user = userMapper.signUpToUser(userDto);
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword())));
@@ -57,8 +62,8 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserDTO createMinistryUser(SignUpDTO user) {
-        var person = this.personRepository.findByEmail(user.getEmail());
-        if(person == null) throw new MAVValidationException("Email no registrado en la base de datos.");
+        var person = this.personRepository.findByEmailAndDocumentNumber(user.getEmail(),user.getDocument());
+        if(person == null) throw new MAVValidationException("No hay registro en la base de datos.");
 
         var ministry  = this.ministryRepository.findByIdPersonToCreate(person.getId());
         if(ministry == null) throw new MAVValidationException("No se encuentra asignado a un ministerio pendiente, por favor" +

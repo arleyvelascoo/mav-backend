@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Repository of Person
  */
@@ -15,7 +17,10 @@ public interface IPersonRepository extends JpaRepository<Person, Long> {
 
     Person findByDocumentNumberAndEmail(String documentNumber,String email);
 
-    Person findByEmail(String email);
-
     Person  findTopByUserId (Long id);
+
+    Person findByEmailAndDocumentNumber(String email, String document);
+
+    List<Person> findAllByIdMinistry(Long idMinistry);
+
 }

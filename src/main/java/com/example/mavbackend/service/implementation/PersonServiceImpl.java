@@ -2,6 +2,7 @@ package com.example.mavbackend.service.implementation;
 
 import com.example.mavbackend.dto.UserDTO;
 import com.example.mavbackend.exception.MAVValidationException;
+import com.example.mavbackend.model.Ministry;
 import com.example.mavbackend.model.Person;
 import com.example.mavbackend.repository.*;
 import com.example.mavbackend.service.interfac.IPersonService;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Objects;
 
 @Qualifier("principalPersonService")
@@ -57,12 +59,10 @@ public class PersonServiceImpl implements IPersonService {
     public Person save(Person person,UserDTO userDTO) {
 
         var rol = this.rolRepository.findById(userDTO.getIdRol()).orElseThrow(MAVValidationException::new);
-        if(!rol.getName().equals(IConstants.LEADERROL)){
-            throw new MAVValidationException("Solo el lider puede agregar personas.");
+        if(!rol.getName().equals(IConstants.USERROL)){
+            throw new MAVValidationException("Solo el líder o administrador puede agregar personas.");
         }
-
         var user = this.userRepository.findById(userDTO.getIdUser()).orElseThrow(MAVValidationException::new);
-
         var ministry = this.ministryRepository.findTopByIdUser(user.getId());
         validate(person, IConstants.INSERT_MODE);
         person.setIdMinistry(ministry.getId());
@@ -112,6 +112,18 @@ public class PersonServiceImpl implements IPersonService {
     @Override
     public Person findById(Long personId) {
         return this.personRepository.findById(personId).orElseThrow(MAVValidationException::new);
+    }
+
+    @Override
+    public List<Person> getAllDisciples(UserDTO userDTO) {
+        var ministry = this.ministryRepository.findTopByIdUser(userDTO.getIdUser());
+        return this.personRepository.findAllByIdMinistry(ministry.getId());
+    }
+
+    @Override
+    public List<Ministry> getAllLeaders(UserDTO userDTO) {
+        var ministry = this.ministryRepository.findTopByIdUser(userDTO.getIdUser());
+        return this.ministryRepository.findAllByIdHigherMinistry(ministry.getId());
     }
 
     private void validate(Person person, String mode){

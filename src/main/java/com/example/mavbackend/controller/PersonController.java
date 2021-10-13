@@ -1,7 +1,9 @@
 package com.example.mavbackend.controller;
 
+import com.example.mavbackend.dto.MinistrySonDTO;
 import com.example.mavbackend.dto.PersonDTO;
 import com.example.mavbackend.dto.UserDTO;
+import com.example.mavbackend.mapper.MinistryMapper;
 import com.example.mavbackend.mapper.PersonMapper;
 import com.example.mavbackend.service.interfac.IPersonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * Controller of Person
  */
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 public class PersonController {
     private IPersonService personService;
     private PersonMapper personMapper;
+    private MinistryMapper ministryMapper;
 
     /**
      * Get individual person by id
@@ -49,8 +54,26 @@ public class PersonController {
         return new ResponseEntity<>(personList.map(p -> this.personMapper.toPersonDTO(p)), HttpStatus.OK);
     }
 
+    @GetMapping("/disciples/all")
+    public ResponseEntity<List<PersonDTO>> getAllDisciples(@AuthenticationPrincipal UserDTO userDTO){
 
-    @GetMapping("/")
+        final var personList = this.personService.getAllDisciples(userDTO);
+        if (personList == null || personList.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.ok(personMapper.toPersonDTOList(personList));
+    }
+
+    @GetMapping("/leaders/all")
+    public ResponseEntity<List<MinistrySonDTO>> getAllLeaders(@AuthenticationPrincipal UserDTO userDTO){
+
+        final var ministryList = this.personService.getAllLeaders(userDTO);
+        if (ministryList == null || ministryList.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.ok(ministryMapper.toMinistrySonDTOList(ministryList));
+    }
+
+
+    @GetMapping("")
     public ResponseEntity<PersonDTO> findPersonFromUser(@AuthenticationPrincipal UserDTO userDTO){
         var person = this.personService.findByIdUser(userDTO.getIdUser());
         if(person == null) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -86,6 +109,11 @@ public class PersonController {
     @Autowired
     public void setPersonMapper(PersonMapper personMapper) {
         this.personMapper = personMapper;
+    }
+
+    @Autowired
+    public void setMinistryMapper(MinistryMapper ministryMapper) {
+        this.ministryMapper = ministryMapper;
     }
 
     @Autowired

@@ -1,6 +1,7 @@
 package com.example.mavbackend.mapper;
 
 import com.example.mavbackend.dto.MinistryDTO;
+import com.example.mavbackend.dto.MinistrySonDTO;
 import com.example.mavbackend.model.Ministry;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -11,7 +12,7 @@ import java.util.List;
  * Mapper of Ministry
  */
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",uses = {PersonMapper.class})
 public interface MinistryMapper {
     //Entity to DTO
 
@@ -31,6 +32,13 @@ public interface MinistryMapper {
      */
     List<MinistryDTO> toMinistryDTOList(List<Ministry> ministryList);
 
+
+    @Mapping(target = "firstLeaderDto", source = "firstLeader")
+    @Mapping(target = "secondLeaderDto", source = "secondLeader")
+    MinistrySonDTO toMinistrySonDTO(Ministry ministry);
+
+    List<MinistrySonDTO> toMinistrySonDTOList(List<Ministry> ministryList);
+
     //DTO to Entity
 
     /**
@@ -41,4 +49,6 @@ public interface MinistryMapper {
     @Mapping(target = "higherMinistry", ignore = true)
     @Mapping(target = "firstLeader", ignore = true)
     Ministry toMinistry(MinistryDTO ministryDTO);
+
+
 }
