@@ -55,10 +55,9 @@ public class UserServiceImpl implements IUserService {
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword())));
 
         var savedUser = userRepository.save(user);
-        if(savedUser == null) throw new MAVValidationException("POR NEGRO NO PUEDE REGISTRARSE.");
         var newUserRol = new UserRol();
         newUserRol.setIdUser(savedUser.getId());
-        newUserRol.setIdRol(this.rolRepository.findTopByNameIgnoreCase(IConstants.USERROL).orElseThrow(()-> new MAVValidationException("ud no tiene miembro (rol jaja).")).getId());
+        newUserRol.setIdRol(this.rolRepository.findTopByNameIgnoreCase(IConstants.USERROL).orElseThrow(()-> new MAVValidationException("No se pudo realizar el registro.")).getId());
         toSignUp.setUserId(savedUser.getId());
 
         return userMapper.toUserDTO(savedUser);
