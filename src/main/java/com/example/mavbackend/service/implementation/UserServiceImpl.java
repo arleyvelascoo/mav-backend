@@ -34,6 +34,7 @@ public class UserServiceImpl implements IUserService {
 
 
     @Override
+    @Transactional
     public UserDTO signUp(SignUpDTO userDto) {
         var optionalUser = this.userRepository.findTopByUsername(userDto.getUsername());
 
