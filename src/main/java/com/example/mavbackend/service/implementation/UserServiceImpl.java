@@ -57,6 +57,7 @@ public class UserServiceImpl implements IUserService {
         newUserRol.setIdUser(savedUser.getId());
         newUserRol.setIdRol(this.rolRepository.findTopByNameIgnoreCase(IConstants.USERROL).orElseThrow(()-> new MAVValidationException("No se pudo realizar el registro.")).getId());
         toSignUp.setUserId(savedUser.getId());
+        this.personRepository.save(toSignUp);
         this.userRolRepository.save(newUserRol);
         return userMapper.toUserDTO(savedUser);
     }
