@@ -17,15 +17,17 @@ public interface PersonMapper {
 
     /**
      * Map Person to PersonDTO
+     *
      * @param person - Instance of Person
      */
     @Mapping(target = "genderName", source = "gender.name")
     @Mapping(target = "documentTypeName", source = "documentType.name")
-    @Mapping(target = "cityName", source = "city.name")
+    @Mapping(target = "cityName", expression = "java(person.getCity().getName() + \" - \" + person.getCity().getState().getName() + \" - \" + person.getCity().getState().getCountry().getName())")
     PersonDTO toPersonDTO(Person person);
 
     /**
      * Map List<Person> to List<PersonDTO>
+     *
      * @param personList - Instance of a List<Person>
      */
     List<PersonDTO> toPersonDTOList(List<Person> personList);
@@ -34,6 +36,7 @@ public interface PersonMapper {
 
     /**
      * Map PersonDTO to Person
+     *
      * @param personDTO - Instance of PersonDTO
      */
     @Mapping(target = "lastNameAndFirstName", ignore = true)

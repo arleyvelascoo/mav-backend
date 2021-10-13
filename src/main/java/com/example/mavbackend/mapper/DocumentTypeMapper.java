@@ -11,7 +11,7 @@ import java.util.List;
 public interface DocumentTypeMapper {
 
 
-    @Mapping(target = "documentName", expression =  "java(documentType.getAcronym() + documentType.getName())")
+    @Mapping(target = "documentName", expression =  "java(documentType.getAcronym() + \" - \" + documentType.getName())")
     DocumentTypeDTO toDocumentTypeDTO(DocumentType documentType);
 
 
