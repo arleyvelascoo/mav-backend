@@ -5,6 +5,7 @@ import com.example.mavbackend.exception.MAVValidationException;
 import com.example.mavbackend.dto.SignUpDTO;
 import com.example.mavbackend.mapper.UserMapper;
 import com.example.mavbackend.model.User;
+import com.example.mavbackend.model.UserRol;
 import com.example.mavbackend.repository.IMinistryRepository;
 import com.example.mavbackend.repository.IPersonRepository;
 import com.example.mavbackend.repository.IUserRepository;

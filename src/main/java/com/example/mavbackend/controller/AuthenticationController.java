@@ -36,44 +36,39 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signUp")
-    public ResponseEntity<UserDTO> signUp(@RequestBody @Valid SignUpDTO user,
-                                          @RequestParam(name = "type") Integer type) {
-        if(type != null && type == 1){
-            UserDTO createdUser = userService.signUp(user);
-            return ResponseEntity.ok(createdUser);
-        }
-        else if(type!=null && type == 2) return ResponseEntity.ok(userService.createMinistryUser(user));
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<UserDTO> signUp(@RequestBody @Valid SignUpDTO user) {
+        UserDTO createdUser = userService.signUp(user);
+        return ResponseEntity.ok(createdUser);
     }
 
     @GetMapping("/validarCreacionMinisterio")
     public ResponseEntity<Boolean> validateMinistryCreation(
             @RequestParam(name = "email") String email,
             @RequestParam(name = "documento") String document
-    ){
-        return ResponseEntity.ok(this.ministryService.validateMinistrySignUp(email,document));
+    ) {
+        return ResponseEntity.ok(this.ministryService.validateMinistrySignUp(email, document));
     }
 
     @GetMapping("/validarCreacionUsuario")
     public ResponseEntity<Boolean> validateUserCreation(
             @RequestParam(name = "email") String email,
             @RequestParam(name = "documento") String document
-    ){
-        return ResponseEntity.ok(this.userService.validateUserSignUp(email,document));
+    ) {
+        return ResponseEntity.ok(this.userService.validateUserSignUp(email, document));
     }
 
     @GetMapping("/existsUsername")
     public ResponseEntity<Boolean> validateUserCreation(
             @RequestParam(name = "username") String username
-    ){
+    ) {
         return ResponseEntity.ok(this.userService.existsUsername(username));
     }
 
 
     @GetMapping("/roles")
-    public ResponseEntity<List<RolDTO>> selectRols(){
+    public ResponseEntity<List<RolDTO>> selectRols() {
         var rols = this.rolService.getAll();
-        if( rols ==null ||  rols.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (rols == null || rols.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return ResponseEntity.ok(rolMapper.toRolDTOList(rols));
     }
 
