@@ -14,7 +14,7 @@ public final class IConstants {
     public static final String INSERT_MODE = "INSERT";
 
     public static String USERROL = "MIEMBRO";
-    public static String LEADERROL = "LIDER";
+    public static String LEADERROL = "LÍDER";
     public static String ADMINISTRATOR = "ADMINISTRADOR";
 
 

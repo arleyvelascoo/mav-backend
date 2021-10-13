@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository of Ministry
@@ -23,5 +24,4 @@ public interface IMinistryRepository extends JpaRepository<Ministry, Long> {
     Ministry findByIdPersonToCreate(Long personId);
 
     List<Ministry> findAllByIdHigherMinistry(Long idHigherMinistry);
-
 }

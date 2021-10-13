@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 @Qualifier("principalPersonService")
@@ -57,13 +58,18 @@ public class PersonServiceImpl implements IPersonService {
     @Override
     @Transactional
     public Person save(Person person,UserDTO userDTO) {
-
         var rol = this.rolRepository.findById(userDTO.getIdRol()).orElseThrow(MAVValidationException::new);
-        if(!rol.getName().equals(IConstants.USERROL)){
+        if(rol.getName().toUpperCase(Locale.ROOT).equals(IConstants.USERROL.toUpperCase(Locale.ROOT))){
             throw new MAVValidationException("Solo el líder o administrador puede agregar personas.");
         }
-        var user = this.userRepository.findById(userDTO.getIdUser()).orElseThrow(MAVValidationException::new);
-        var ministry = this.ministryRepository.findTopByIdUser(user.getId());
+        var existingPerson = this.personRepository.findTopByUserId(userDTO.getIdUser());
+        if (person == null){
+            throw new MAVValidationException("No hay ninguna persona con este usuario");
+        }
+        var ministry = this.ministryRepository.findByIdPerson(existingPerson.getId());
+        if (ministry == null) {
+            throw new MAVValidationException();
+        }
         validate(person, IConstants.INSERT_MODE);
         person.setIdMinistry(ministry.getId());
         this.personRepository.save(person);
@@ -116,7 +122,14 @@ public class PersonServiceImpl implements IPersonService {
 
     @Override
     public List<Person> getAllDisciples(UserDTO userDTO) {
-        var ministry = this.ministryRepository.findTopByIdUser(userDTO.getIdUser());
+        var person = this.personRepository.findTopByUserId(userDTO.getIdUser());
+        if (person == null){
+            throw new MAVValidationException("No hay ninguna persona con este usuario");
+        }
+        var ministry = this.ministryRepository.findByIdPerson(person.getId());
+        if (ministry == null){
+            throw new MAVValidationException("No hay ningún ministerio asociado a este usuario");
+        }
         return this.personRepository.findAllByIdMinistry(ministry.getId());
     }
 
