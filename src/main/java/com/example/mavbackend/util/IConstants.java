@@ -17,5 +17,10 @@ public final class IConstants {
     public static String LEADERROL = "LÍDER";
     public static String ADMINISTRATOR = "ADMINISTRADOR";
 
+//	public static int PUERTO_SERIDOR_CORREO = 465;
+//	public static String NOMBRE_SERVIDOR_CORREO = "smtp.hostinger.com";
+
+	public static int PUERTO_SERIDOR_CORREO = 587;
+	public static String NOMBRE_SERVIDOR_CORREO = "smtp.office365.com";
 
 }

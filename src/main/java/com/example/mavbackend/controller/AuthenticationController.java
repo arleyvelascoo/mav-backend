@@ -5,6 +5,7 @@ import com.example.mavbackend.dto.RolDTO;
 import com.example.mavbackend.dto.UserDTO;
 import com.example.mavbackend.dto.SignUpDTO;
 import com.example.mavbackend.mapper.RolMapper;
+import com.example.mavbackend.service.implementation.AuthenticationService;
 import com.example.mavbackend.service.interfac.IMinistryService;
 import com.example.mavbackend.service.interfac.IRolService;
 import com.example.mavbackend.service.interfac.IUserService;
@@ -28,6 +29,13 @@ public class AuthenticationController {
     private final UserAuthenticationProvider userAuthenticationProvider;
     private final IMinistryService ministryService;
     private final RolMapper rolMapper;
+    private final AuthenticationService authenticationService;
+
+    @GetMapping("recoverPassword")
+    public ResponseEntity<Boolean> recoverPassword(@RequestParam String username){
+        this.authenticationService.verifyIdentityAndSendEmail(username);
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
 
     @PostMapping("/signIn")
     public ResponseEntity<UserDTO> signIn(@AuthenticationPrincipal UserDTO user) {
